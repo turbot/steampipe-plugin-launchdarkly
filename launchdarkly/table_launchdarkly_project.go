@@ -56,7 +56,6 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Name:        "tags",
 				Description: "A list of tags for the project.",
 				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromField("CreationDate").Transform(transform.UnixMsToTimestamp),
 			},
 		},
 	}
