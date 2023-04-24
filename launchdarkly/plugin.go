@@ -20,7 +20,8 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			"launchdarkly_access_token":                    tablelaunchdarklyAccessToken(ctx),
+			"launchdarkly_access_token": 	tablelaunchdarklyAccessToken(ctx),
+			"launchdarkly_audit_log":		tablelaunchdarklyAuditLog(ctx),				
 		},
 	}
 	return p
