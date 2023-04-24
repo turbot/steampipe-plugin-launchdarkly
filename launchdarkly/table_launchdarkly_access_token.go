@@ -13,7 +13,7 @@ import (
 func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "launchdarkly_access_token",
-		Description: "Fetch a list of all access tokens..",
+		Description: "Fetch a list of all access tokens.",
 		List: &plugin.ListConfig{
 			Hydrate: listAccessTokens,
 		},
