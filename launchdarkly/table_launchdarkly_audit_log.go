@@ -162,12 +162,12 @@ func getAuditLog(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData
 		return nil, err
 	}
 
-	token, _, err := client.AuditLogApi.GetAuditLogEntry(ctx, id).Execute()
+	auditLog, _, err := client.AuditLogApi.GetAuditLogEntry(ctx, id).Execute()
 	if err != nil {
 		logger.Error("launchdarkly_audit_log.getAuditLog", "api_error", err)
 		return nil, err
 	}
 
-	return token, nil
+	return auditLog, nil
 }
 
