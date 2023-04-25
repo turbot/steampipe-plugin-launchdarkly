@@ -95,6 +95,13 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 				Description: "The key of this project.",
 				Type:        proto.ColumnType_STRING,
 			},
+			// Steampipe standard columns
+			{
+				Name:        "title",
+				Description: "Title of the resource.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Name"),
+			},
 		},
 	}
 }
