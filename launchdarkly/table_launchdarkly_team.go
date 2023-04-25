@@ -17,29 +17,19 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 		List: &plugin.ListConfig{
 			Hydrate: listTeams,
 		},
-		// Get: &plugin.GetConfig{
-		// 	KeyColumns: plugin.SingleColumn("id"),
-		// 	Hydrate: getTeam,
-		// },
+		Get: &plugin.GetConfig{
+			KeyColumns: plugin.SingleColumn("key"),
+			Hydrate: getTeam,
+		},
 		Columns: []*plugin.Column{
 			{
 				Name:        "name",
-				Description: "The name of the access token.",
+				Description: "A human-friendly name for the team.",
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "id",
-				Description: "A unique identifier of the access token.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "owner_id",
-				Description: "A unique identifier of the owner of the organization.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "member_id",
-				Description: "A unique identifier of the member of the organization.",
+				Name:        "key",
+				Description: "The team key.",
 				Type:        proto.ColumnType_STRING,
 			},
 			{
@@ -48,46 +38,21 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "member",
-				Description: "Summary of the member like email, first name, last name etc.",
+				Name:        "access",
+				Description: "Defines the access levels designated to the team members.",
 				Type:        proto.ColumnType_JSON,
 			},
 			{
 				Name:        "creation_date",
-				Description: "Creation date of the access token.",
+				Description: "Creation date of the team.",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("CreationDate").Transform(transform.UnixMsToTimestamp),
 			},
 			{
 				Name:        "last_modified",
-				Description: "Last modified date of the access token.",
+				Description: "Last modified date and team.",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("LastModified").Transform(transform.UnixMsToTimestamp),
-			},
-			{
-				Name:        "custom_role_ids",
-				Description: "A list of custom role IDs to use as access limits for the access token.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "inline_role",
-				Description: "An array of policy statements, with three attributes: effect, resources, actions. May be used in place of a built-in or custom role.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "role",
-				Description: "Built-in role for the token.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "token",
-				Description: "The token value. When creating or resetting, contains the entire token value. Otherwise, contains the last four characters.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "service_token",
-				Description: "Whether this is a service token or a personal token.",
-				Type:        proto.ColumnType_BOOL,
 			},
 			{
 				Name:        "links",
@@ -95,15 +60,50 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_JSON,
 			},
 			{
-				Name:        "default_api_version",
-				Description: "The default API version for this token.",
+				Name:        "roles",
+				Description: "Custom roles assigned to the team.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "idp_synced",
+				Description: "Whether the team has been synced with an external identity provider (IdP). Team sync is available to customers on an Enterprise plan.",
+				Type:        proto.ColumnType_BOOL,
+			},
+			{
+				Name:        "members",
+				Description: "Team member details.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "projects",
+				Description: "Project details associated with the team.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "maintainers",
+				Description: "Team maintainer details.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "version",
+				Description: "The team version.",
 				Type:        proto.ColumnType_INT,
 			},
 			{
-				Name:        "last_used",
-				Description: "Date and time when the access token was last used.",
-				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("LastUsed").Transform(transform.UnixMsToTimestamp),
+				Name:        "filter",
+				Description: "A comma-separated list of filters.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("filter"),
+			},
+			{
+				Name:        "expand",
+				Description: "A comma-separated list of properties that can reveal additional information in the response.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("expand"),
 			},
 			// Steampipe standard columns
 			{
@@ -128,34 +128,68 @@ func listTeams(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) 
 		return nil, err
 	}
 
-	tokens, _, err := client.TeamsApi.GetTeams(ctx).Execute()
-	if err != nil {
-		logger.Error("launchdarkly_access_token.listAccessTokens", "api_error", err)
-		return nil, err
-	}
-	for _, item := range tokens.Items {
-		d.StreamListItem(ctx, item)
+	params := client.TeamsApi.GetTeams(ctx)
+
+	if d.QueryContext.Limit != nil {
+		limit := int32(*d.QueryContext.Limit)
+
+		maxTeams := int64(20)
+
+		if limit < int32(maxTeams) {
+			params = params.Limit(int64(limit))
+		}
 	}
 
+	if d.EqualsQuals["filter"].GetStringValue() != "" {
+		params = params.Filter(d.EqualsQualString("filter"))
+	}
+
+	if d.EqualsQuals["expand"].GetStringValue() != "" {
+		params = params.Filter(d.EqualsQualString("expand"))
+	}
+
+	count := 0
+
+	for {
+		teams, _, err := params.Execute()
+		if err != nil {
+			logger.Error("launchdarkly_team.listTeams", "api_error", err)
+			return nil, err
+		}
+
+		for _, item := range teams.Items {
+			d.StreamListItem(ctx, item)
+			// Context can be cancelled due to manual cancellation or the limit has been hit
+			if d.RowsRemaining(ctx) == 0 {
+				return nil, nil
+			}
+		}
+		count += len(teams.Items)
+		if count >= int(*teams.TotalCount) {
+			break
+		}
+		params.Offset(int64(count))
+	}
 	return nil, nil
 }
 
 func getTeam(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+
 	logger := plugin.Logger(ctx)
-	id := d.EqualsQualString("id")
+	key := d.EqualsQualString("key")
+
 	// Create client
 	client, err := connect(ctx, d)
 	if err != nil {
-		logger.Error("launchdarkly_access_token.getAccessToken", "connection_error", err)
+		logger.Error("launchdarkly_team.getTeam", "connection_error", err)
 		return nil, err
 	}
 
-	token, _, err := client.AccessTokensApi.GetToken(ctx, id).Execute()
+	team, _, err := client.TeamsApi.GetTeam(ctx, key).Execute()
 	if err != nil {
-		logger.Error("launchdarkly_access_token.listAccessTokens", "api_error", err)
+		logger.Error("launchdarkly_team.getTeam", "api_error", err)
 		return nil, err
 	}
 
-	return token, nil
+	return team, nil
 }
-
