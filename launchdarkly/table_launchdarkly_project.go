@@ -98,6 +98,16 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 
 	params := client.ProjectsApi.GetProjects(ctx)
 
+	if d.QueryContext.Limit != nil {
+		limit := int32(*d.QueryContext.Limit)
+
+		maxProjects := int64(20)
+
+		if limit < int32(maxProjects) {
+			params = params.Limit(int64(limit))
+		}
+	}
+
 	if d.EqualsQuals["filter"].GetStringValue() != "" {
 		params = params.Filter(d.EqualsQualString("filter"))
 	}
@@ -105,6 +115,7 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 	if d.EqualsQuals["expand"].GetStringValue() != "" {
 		params = params.Filter(d.EqualsQualString("expand"))
 	}
+
 	count := 0
 
 	for {
