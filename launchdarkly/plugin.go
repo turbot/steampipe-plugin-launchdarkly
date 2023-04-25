@@ -25,6 +25,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"launchdarkly_project":      tablelaunchdarklyProject(ctx),
 			"launchdarkly_environment":  tablelaunchdarklyEnvironment(ctx),
 			"launchdarkly_feature_flag": tablelaunchdarklyFeatureFlag(ctx),
+			"launchdarkly_team":         tablelaunchdarklyTeam(ctx),
 		},
 	}
 	return p
