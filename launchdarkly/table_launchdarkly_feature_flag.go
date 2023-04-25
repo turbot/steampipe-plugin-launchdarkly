@@ -18,6 +18,10 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 		List: &plugin.ListConfig{
 			ParentHydrate: listProjects,
 			Hydrate: listFeatureFlags,
+			
+			RetryConfig: &plugin.RetryConfig{
+				ShouldRetryErrorFunc: shouldRetryError([]string{"429"}),
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.AllColumns([]string{"project_key", "key"}),
