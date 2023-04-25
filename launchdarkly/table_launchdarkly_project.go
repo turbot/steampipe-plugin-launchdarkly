@@ -6,6 +6,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
+	// ldapi "github.com/launchdarkly/api-client-go/v13"
 )
 
 //// TABLE DEFINITION
@@ -15,11 +16,15 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 		Name:        "launchdarkly_project",
 		Description: "Fetch a list of all projects.",
 		List: &plugin.ListConfig{
+			KeyColumns: []*plugin.KeyColumn{
+				{Name: "filter", Require: plugin.Optional},
+				{Name: "expand", Require: plugin.Optional},
+			},
 			Hydrate: listProjects,
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate: getProject,
+			Hydrate:    getProject,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -57,6 +62,18 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Description: "A list of tags for the project.",
 				Type:        proto.ColumnType_JSON,
 			},
+			{
+				Name:        "filter",
+				Description: "A comma-separated list of filters.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("filter"),
+			},
+			{
+				Name:        "expand",
+				Description: "A comma-separated list of properties that can reveal additional information in the response.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("expand"),
+			},
 		},
 	}
 }
@@ -72,44 +89,26 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 		return nil, err
 	}
 
-	var params = client.ProjectsApi.GetProjects(ctx)
-	offsetparam := d.EqualsQuals["offset"].GetInt64Value()
-	logger.Trace("Apple, checking output of offset", offsetparam)
-	if d.EqualsQuals["offset"].GetInt64Value() != 0 {
-		params.Offset(d.EqualsQuals["offset"].GetInt64Value())
-	}
-
-	if d.EqualsQuals["limit"].GetInt64Value() != 0 {
-		params.Limit(d.EqualsQuals["limit"].GetInt64Value())
-	} else {
-		params.Limit(20)
-	}
+	params := client.ProjectsApi.GetProjects(ctx)
 
 	if d.EqualsQuals["filter"].GetStringValue() != "" {
-		params.Filter(d.EqualsQuals["filter"].GetStringValue())
-	}
-
-	if d.EqualsQuals["sort"].GetStringValue() != "" {
-		params.Sort(d.EqualsQuals["sort"].GetStringValue())
+		params = params.Filter(d.EqualsQualString("filter"))
 	}
 
 	if d.EqualsQuals["expand"].GetStringValue() != "" {
-		params.Expand(d.EqualsQuals["expand"].GetStringValue())
+		params = params.Filter(d.EqualsQualString("expand"))
 	}
-
 	count := 0
 
 	for {
 		projects, _, err := params.Execute()
-		checkTotal := projects.GetTotalCount()
-		logger.Trace("Check total count error", checkTotal)
 		if err != nil {
 			plugin.Logger(ctx).Error("listProject", "api_error", err)
 			return nil, err
 		}
 
-		for _, item := range projects.Items {
-			d.StreamListItem(ctx, item)
+		for _, project := range projects.Items {
+			d.StreamListItem(ctx, project)
 
 			// Context can be cancelled due to manual cancellation or the limit has been hit
 			if d.RowsRemaining(ctx) == 0 {
