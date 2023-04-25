@@ -21,7 +21,7 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.AllColumns([]string{"project_key", "id"}),
-			Hydrate: getAccessToken,
+			Hydrate: getEnvironment,
 		},
 		Columns: []*plugin.Column{
 			{
