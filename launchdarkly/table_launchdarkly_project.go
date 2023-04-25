@@ -103,7 +103,7 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 	for {
 		projects, _, err := params.Execute()
 		if err != nil {
-			plugin.Logger(ctx).Error("listProject", "api_error", err)
+			plugin.Logger(ctx).Error("launchdarkly_project.listProjects", "api_error", err)
 			return nil, err
 		}
 
@@ -129,6 +129,7 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
 	id := d.EqualsQualString("id")
+
 	// Create client
 	client, err := connect(ctx, d)
 	if err != nil {
