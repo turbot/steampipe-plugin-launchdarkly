@@ -20,7 +20,7 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 			Hydrate: listEnvironments,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.AllColumns([]string{"project_key", "id"}),
+			KeyColumns: plugin.AllColumns([]string{"project_key", "key"}),
 			Hydrate: getEnvironment,
 		},
 		Columns: []*plugin.Column{
@@ -164,5 +164,5 @@ func getEnvironment(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateD
 		return nil, err
 	}
 
-	return environment, nil
+	return launchdarklyProjectEnvironment{*environment, projectKey}, nil
 }
