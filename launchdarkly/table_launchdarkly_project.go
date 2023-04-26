@@ -3,6 +3,7 @@ package launchdarkly
 import (
 	"context"
 
+	ldapi "github.com/launchdarkly/api-client-go/v13"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -22,7 +23,7 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 			Hydrate: listProjects,
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn("key"),
 			Hydrate:    getProject,
 		},
 		Columns: []*plugin.Column{
@@ -78,6 +79,13 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Description: "A comma-separated list of properties that can reveal additional information in the response.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromQual("expand"),
+			},
+			{
+				Name:        "flag_defaults",
+				Description: "Details of the flag defaults for a specific project.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromValue(),
+				Hydrate:     getFlagDefaultsForProject,
 			},
 			// Steampipe standard columns
 			{
@@ -151,7 +159,7 @@ func listProjects(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDat
 
 func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
-	id := d.EqualsQualString("id")
+	key := d.EqualsQualString("key")
 
 	// Create client
 	client, err := connect(ctx, d)
@@ -160,11 +168,32 @@ func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData)
 		return nil, err
 	}
 
-	token, _, err := client.ProjectsApi.GetProject(ctx, id).Execute()
+	project, _, err := client.ProjectsApi.GetProject(ctx, key).Execute()
 	if err != nil {
 		logger.Error("launchdarkly_project.getProject", "api_error", err)
 		return nil, err
 	}
 
-	return token, nil
+	return *project, nil
+}
+
+func getFlagDefaultsForProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	logger := plugin.Logger(ctx)
+	key := h.Item.(ldapi.Project).Key
+	logger.Trace("Key info", key)
+
+	// Create client
+	client, err := connect(ctx, d)
+	if err != nil {
+		logger.Error("launchdarkly_project.getFlagDefaultsForProject", "connection_error", err)
+		return nil, err
+	}
+
+	flag, _, err := client.ProjectsApi.GetFlagDefaultsByProject(ctx, key).Execute()
+	if err != nil {
+		logger.Error("launchdarkly_project.getFlagDefaultsForProject", "api_error", err)
+		return nil, err
+	}
+
+	return flag, nil
 }
