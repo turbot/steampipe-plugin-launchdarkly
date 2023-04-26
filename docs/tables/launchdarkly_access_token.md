@@ -33,7 +33,7 @@ from
   launchdarkly_access_token;
 ```
 
-### List the teams that have been created in the last 30 days
+### List the access tokens that have been created in the last 30 days
 
 ```sql
 select
@@ -45,7 +45,7 @@ select
 from
   launchdarkly_access_token
 where
-  creation_date <= now() - interval '30' day;
+  creation_date >= now() - interval '30' day;
 ```
 
 ### List of access tokens which haven't been used in the last 30 days

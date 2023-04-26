@@ -29,7 +29,7 @@ select
 from
   launchdarkly_team
 where
-  creation_date <= now() - interval '30' day;
+  creation_date >= now() - interval '30' day;
 ```
 
 ### List the maintainer details of a team

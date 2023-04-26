@@ -29,7 +29,7 @@ select
 from
   launchdarkly_feature_flag
 where
-  creation_date <= now() - interval '30' day;
+  creation_date >= now() - interval '30' day;
 ```
 
 ### List out the feature flags that are in archived state
