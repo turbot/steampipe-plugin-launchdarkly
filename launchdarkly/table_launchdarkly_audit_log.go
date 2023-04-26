@@ -16,10 +16,21 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 		Description: "Fetch a list of all access tokens.",
 		List: &plugin.ListConfig{
 			Hydrate: listAuditLogs,
+			KeyColumns: []*plugin.KeyColumn{
+				{
+					Name:    "spec",
+					Require: plugin.Optional,
+				},
+				{
+					Name:      "date",
+					Require:   plugin.Optional,
+					Operators: []string{">", ">=", "=", "<", "<="},
+				},
+			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate: getAuditLog,
+			Hydrate:    getAuditLog,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -50,7 +61,7 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 			{
 				Name:        "date",
 				Description: "Date of the audit log.",
-				Type:        proto.ColumnType_STRING,
+				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("Date").Transform(transform.UnixMsToTimestamp),
 			},
 			{
@@ -107,13 +118,25 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 				Name:        "target",
 				Description: "Target resource representation.",
 				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromJSONTag(),	
+				Transform:   transform.FromJSONTag(),
 			},
 			{
 				Name:        "parent",
 				Description: "Parent resource representation.",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "spec",
+				Description: "A resource specifier that lets you filter audit log listings by resource.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("spec"),
+			},
+			{
+				Name:        "query",
+				Description: "Text to search for. You can search for the full or partial name of the resource, or full or partial email address of the member who made a change.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("query"),
 			},
 			// Steampipe standard columns
 			{
@@ -138,9 +161,53 @@ func listAuditLogs(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDa
 		return nil, err
 	}
 
-	// Add support for optional quals
+	params := client.AuditLogApi.GetAuditLogEntries(ctx)
 
-	auditLogs, _, err := client.AuditLogApi.GetAuditLogEntries(ctx).Execute()
+	// Add support for optional date quals
+
+	if d.Quals["date"] != nil {
+		for _, q := range d.Quals["date"].Quals {
+			givenTime := q.Value.GetTimestampValue().GetSeconds()
+			givenTimeMs := givenTime * 1000
+			beforeTimeMs := (givenTime - 1) * 1000
+			afterTimeMs := (givenTime + 1) * 1000
+
+			switch q.Operator {
+			case ">":
+				params = params.After(afterTimeMs)
+			case ">=":
+				params = params.After(afterTimeMs)
+			case "=":
+				params = params.Before(givenTimeMs)
+				params = params.After(givenTimeMs)
+			case "<=":
+				params = params.Before(beforeTimeMs)
+			case "<":
+				params = params.Before(beforeTimeMs)
+			}
+		}
+	}
+
+	// Add support for optional spec qual
+	if d.EqualsQuals["spec"] != nil {
+		params = params.Spec(d.EqualsQuals["spec"].GetStringValue())
+	}
+
+	if d.EqualsQuals["spec"] != nil {
+		params = params.Q(d.EqualsQuals["query"].GetStringValue())
+	}
+
+	if d.QueryContext.Limit != nil {
+		limit := int32(*d.QueryContext.Limit)
+
+		maxAuditLogs := int64(20)
+
+		if limit < int32(maxAuditLogs) {
+			params = params.Limit(int64(limit))
+		}
+	}
+
+	auditLogs, _, err := params.Execute()
 	if err != nil {
 		logger.Error("launchdarkly_audit_log.listAuditLogs", "api_error", err)
 		return nil, err
@@ -170,4 +237,3 @@ func getAuditLog(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData
 
 	return auditLog, nil
 }
-
