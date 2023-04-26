@@ -42,3 +42,20 @@ where
   default_client_side_availability ->> 'usingMobileKey' = 'true';
 ```
 
+### Display the flag defaults for a project
+
+```sql
+select
+  id as project_id,
+  key as project_key,
+  name as project_name,
+  flag_defaults ->> 'temporary' as temporary_flag,
+  flag_defaults -> 'booleanDefaults' ->> 'trueDisplayName' as true_display_name,
+  flag_defaults -> 'booleanDefaults' ->> 'falseDisplayName' as false_display_name,
+  flag_defaults -> 'booleanDefaults' ->> 'onVariation' as on_variation,
+  flag_defaults -> 'booleanDefaults' ->> 'offVariation' as off_variation,
+  flag_defaults -> 'defaultClientSideAvailability' ->> 'usingEnvironmentId' as client_side_availability_using_environment_id,
+  flag_defaults -> 'defaultClientSideAvailability' ->> 'usingMobileKey' as client_side_availability_using_mobile_key
+from
+  launchdarkly_project;
+```
