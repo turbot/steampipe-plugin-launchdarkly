@@ -21,12 +21,13 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			"launchdarkly_access_token": tablelaunchdarklyAccessToken(ctx),
-			"launchdarkly_audit_log":    tablelaunchdarklyAuditLog(ctx),
-			"launchdarkly_project":      tablelaunchdarklyProject(ctx),
-			"launchdarkly_environment":  tablelaunchdarklyEnvironment(ctx),
-			"launchdarkly_feature_flag": tablelaunchdarklyFeatureFlag(ctx),
-			"launchdarkly_team":         tablelaunchdarklyTeam(ctx),
+			"launchdarkly_access_token":   tablelaunchdarklyAccessToken(ctx),
+			"launchdarkly_account_member": tablelaunchdarklyAccountMember(ctx),
+			"launchdarkly_audit_log":      tablelaunchdarklyAuditLog(ctx),
+			"launchdarkly_environment":    tablelaunchdarklyEnvironment(ctx),
+			"launchdarkly_feature_flag":   tablelaunchdarklyFeatureFlag(ctx),
+			"launchdarkly_project":        tablelaunchdarklyProject(ctx),
+			"launchdarkly_team":           tablelaunchdarklyTeam(ctx),
 		},
 	}
 	return p
