@@ -1,6 +1,6 @@
 # Table: launchdarkly_environment
 
-Environments allow you to maintain separate rollout rules in different contexts, from local development to QA, staging, and production. With the LaunchDarkly Environments API, you can programmatically create, delete, and update environments.
+This table stores information about different contexts, also known as environments, where rollout rules can be maintained separately. Environments are used for different stages of software development, such as local development, QA, staging, and production. The LaunchDarkly Environments API allows you to manage these environments programmatically, by providing functionalities to create, delete, and update them.
 
 ## Examples
 

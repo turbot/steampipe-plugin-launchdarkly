@@ -1,6 +1,6 @@
 # Table: launchdarkly_feature_flag
 
-The feature flag API allows you to control percentage rollouts, target specific contexts, or even toggle off a feature programmatically. By looking at the representation of a feature flag, we can see how to do any of these tasks.
+Thisg table provides information about feature flags used by your application. Feature flags are used to control percentage rollouts, target specific contexts, or toggle off a feature programmatically. By querying this table, you can view the representation of a feature flag and perform various tasks related to feature management.
 
 ## Examples
 
@@ -32,7 +32,7 @@ where
   creation_date >= now() - interval '30' day;
 ```
 
-### List out the feature flags that are in archived state
+### List out the archived feature flags
 
 ```sql
 select
@@ -62,13 +62,16 @@ where
   temporary;
 ```
 
-### List out the maintainer details for a feature flag
+### List out the maintainer details of a feature flag
 
 ```sql
 select
+  name,
+  key,
+  version,  
   maintainer ->> '_id' as maintainer_id,
   maintainer ->> 'email' as maintainer_email_id,
- (maintainer ->> 'firstName') || ' ' || (maintainer ->> 'lastName')as maintainer_name,
+  (maintainer ->> 'firstName') || ' ' || (maintainer ->> 'lastName')as maintainer_name,
   maintainer ->> 'role' as maintainer_role
 from
   launchdarkly_feature_flag;

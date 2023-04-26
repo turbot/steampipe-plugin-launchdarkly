@@ -1,6 +1,6 @@
 # Table: launchdarkly_audit_log
 
-The audit log contains a record of all the changes made to any resource in the system. You can filter the audit log by timestamps, or use a custom policy to select which entries to receive.
+The audit log contains a record of all the changes made to any resource in the system. You can filter the audit log by date, or use a custom policy to select which entries to receive.
 
 ## Examples
 
@@ -73,6 +73,8 @@ order by
 
 ```sql
 select
+  name,
+  id,
   date,
   (member ->> 'firstName') || ' ' || (member ->> 'lastName') as actor_display_name,
   audit_log_title,

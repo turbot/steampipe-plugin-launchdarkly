@@ -17,7 +17,7 @@ from
   launchdarkly_team;
 ```
 
-### List the teams that have been created in the last 30 days
+### List teams that have been created in the last 30 days
 
 ```sql
 select
@@ -36,6 +36,9 @@ where
 
 ```sql
 select
+  name,
+  description,
+  key,
   maintainers -> 'totalCount' as maintainer_count,
   i ->> '_id' as maintainer_id,
   (i ->> 'firstName') || ' ' || (i ->> 'lastName')as maintainer_name,
@@ -61,7 +64,7 @@ where
   last_modified <= now() - interval '30' day;
 ```
 
-### List the teams that has been synced with an external identity provider
+### List the teams that have been synced with an external identity provider
 
 ```sql
 select

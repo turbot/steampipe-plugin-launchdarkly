@@ -2,7 +2,10 @@ module github.com/turbot/steampipe-plugin-launchdarkly
 
 go 1.19
 
-require github.com/turbot/steampipe-plugin-sdk/v5 v5.3.0
+require (
+	github.com/launchdarkly/api-client-go/v13 v13.0.0
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.3.0
+)
 
 require (
 	cloud.google.com/go v0.65.0 // indirect
@@ -49,7 +52,6 @@ require (
 	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/klauspost/compress v1.11.2 // indirect
-	github.com/launchdarkly/api-client-go/v13 v13.0.0
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect

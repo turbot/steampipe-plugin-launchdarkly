@@ -1,6 +1,6 @@
 # Table: launchdarkly_access_token
 
-Access tokens are long-term credentials for an user. The personal access token or service token are used to authenticate with LaunchDarkly.
+Access tokens are long-term credentials for a user. The personal access token or service token are used to authenticate with LaunchDarkly.
 
 ## Examples
 

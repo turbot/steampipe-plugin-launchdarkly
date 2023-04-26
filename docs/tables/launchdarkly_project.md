@@ -15,7 +15,7 @@ from
   launchdarkly_project;
 ```
 
-### List the project details in an environment
+### Get the environment details of a project
 
 ```sql
 select
@@ -29,7 +29,7 @@ from
   left join launchdarkly_environment as e on p.key = e.project_key;
 ```
 
-### List the projects that have default client side availaility using mobile key enabled
+### List the projects that have default client side availaility using mobile key
 
 ```sql
 select
@@ -42,7 +42,7 @@ where
   default_client_side_availability ->> 'usingMobileKey' = 'true';
 ```
 
-### Display the flag defaults for a project
+### List the flag defaults of a project
 
 ```sql
 select
