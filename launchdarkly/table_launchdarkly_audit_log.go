@@ -13,7 +13,7 @@ import (
 func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "launchdarkly_audit_log",
-		Description: "Fetch a list of all access tokens.",
+		Description: "Fetch a list of audit tags.",
 		List: &plugin.ListConfig{
 			Hydrate: listAuditLogs,
 			KeyColumns: []*plugin.KeyColumn{
@@ -25,6 +25,10 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 					Name:      "date",
 					Require:   plugin.Optional,
 					Operators: []string{">", ">=", "=", "<", "<="},
+				},
+				{
+					Name:      "query",
+					Require:   plugin.Optional,
 				},
 			},
 		},
