@@ -53,7 +53,7 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Name:        "creation_date",
 				Description: "API key to use with mobile SDKs.",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("creationDate").Transform(transform.UnixMsToTimestamp),
+				Transform:   transform.FromField("CreationDate").Transform(transform.UnixMsToTimestamp),
 			},
 			{
 				Name:        "include_in_snippet",
@@ -122,9 +122,9 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 			},
 			{
 				Name:        "archived_date",
-				Description: "Boolean indicating if the feature flag is archived.",
+				Description: "Time when the feature flag has been archived.",
 				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("archivedDate").Transform(transform.UnixMsToTimestamp),
+				Transform:   transform.FromField("ArchivedDate").Transform(transform.UnixMsToTimestamp),
 			},
 			{
 				Name:        "defaults",

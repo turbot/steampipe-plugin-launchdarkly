@@ -6,7 +6,6 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
-	// ldapi "github.com/launchdarkly/api-client-go/v13"
 )
 
 //// TABLE DEFINITION
@@ -61,6 +60,12 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Name:        "tags",
 				Description: "A list of tags for the project.",
 				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "environments",
+				Description: "Details of the environment associated to the project.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
 			},
 			{
 				Name:        "filter",
