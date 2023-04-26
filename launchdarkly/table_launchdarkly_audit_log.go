@@ -13,7 +13,7 @@ import (
 func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "launchdarkly_audit_log",
-		Description: "Fetch a list of audit tags.",
+		Description: "Fetch a list of audit logs.",
 		List: &plugin.ListConfig{
 			Hydrate: listAuditLogs,
 			KeyColumns: []*plugin.KeyColumn{

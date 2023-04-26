@@ -137,7 +137,7 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 			},
 			{
 				Name:        "environments",
-				Description: "Details on the environments for this flag.",
+				Description: "A JSON object containing configuration information for different environments.",
 				Type:        proto.ColumnType_JSON,
 			},
 			{
