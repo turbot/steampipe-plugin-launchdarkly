@@ -15,6 +15,10 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 		Name:        "launchdarkly_team",
 		Description: "Fetch a list of all teams.",
 		List: &plugin.ListConfig{
+			KeyColumns: []*plugin.KeyColumn{
+				{Name: "filter", Require: plugin.Optional},
+				{Name: "expand", Require: plugin.Optional},
+			},
 			Hydrate: listTeams,
 		},
 		Get: &plugin.GetConfig{
