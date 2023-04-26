@@ -11,6 +11,16 @@ import (
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (*ldapi.APIClient, error) {
+	conn, err := connectionCached(ctx, d, nil)
+	if err != nil {
+		return nil, err
+	}
+	return conn.(*ldapi.APIClient), nil
+}
+
+var connectionCached = plugin.HydrateFunc(connectionUncached).Memoize()
+
+func connectionUncached(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (any, error) {
 
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "launchdarkly"
