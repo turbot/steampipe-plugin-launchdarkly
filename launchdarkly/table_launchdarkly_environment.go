@@ -98,6 +98,11 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 				Description: "The key of this project.",
 				Type:        proto.ColumnType_STRING,
 			},
+			{
+				Name:        "approval_settings",
+				Description: "Describe the approval settings of an environment",
+				Type:        proto.ColumnType_JSON,
+			},
 			// Steampipe standard columns
 			{
 				Name:        "title",
