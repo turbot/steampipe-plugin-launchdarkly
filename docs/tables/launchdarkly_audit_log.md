@@ -47,7 +47,8 @@ from
   launchdarkly_audit_log
 group by
   account_id,
-  actor_display_name
+  actor_display_name,
+  name
 order by
   count desc;
 ```
@@ -62,7 +63,8 @@ select
 from
   launchdarkly_audit_log
 group by
-  title_verb
+  title_verb,
+  name
 order by
   count desc;
 ```
