@@ -25,6 +25,7 @@ select
   date,
   audit_log_title,
   (member ->> 'firstName') || ' ' || (member ->> 'lastName') as actor_display_name,
+  name,
   title_verb
 from
   launchdarkly_audit_log
@@ -39,13 +40,15 @@ limit
 ```sql
 select
   account_id,
+  name,
   (member ->> 'firstName') || ' ' || (member ->> 'lastName') as actor_display_name,
   count(*)
 from
   launchdarkly_audit_log
 group by
   account_id,
-  actor_display_name
+  actor_display_name,
+  name
 order by
   count desc;
 ```
@@ -55,11 +58,13 @@ order by
 ```sql
 select
   title_verb,
+  name,
   count(*)
 from
   launchdarkly_audit_log
 group by
-  title_verb
+  title_verb,
+  name
 order by
   count desc;
 ```
@@ -71,6 +76,7 @@ select
   date,
   (member ->> 'firstName') || ' ' || (member ->> 'lastName') as actor_display_name,
   audit_log_title,
+  name,
   title_verb
 from
   launchdarkly_audit_log,
@@ -79,4 +85,36 @@ where
   a ->> 'action' = 'createProject'
 order by
   date desc;
+```
+
+### List events that occurred over the last five minutes
+
+```sql
+select
+  audit_log_title,
+  name,
+  id,
+  date
+from
+  launchdarkly_audit_log
+where
+  name = 'audit-log-name'
+  and date >= now() - interval '5 minutes';
+```
+
+### List ordered events that occurred between five to ten minutes ago
+
+```sql
+select
+  name,
+  audit_log_title,
+  id,
+  date
+from
+  launchdarkly_audit_log
+where
+  name = 'audit-log-name'
+  and date between (now() - interval '10 minutes') and (now() - interval '5 minutes')
+order by
+  date asc;
 ```
