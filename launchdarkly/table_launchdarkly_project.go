@@ -28,11 +28,6 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "links",
-				Description: "The location and content type of related resources.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "id",
 				Description: "The unique identifier of this project.",
 				Type:        proto.ColumnType_STRING,
@@ -48,25 +43,9 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
-				Name:        "default_client_side_availability",
-				Description: "A set of boolean values which represent the client side availability.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "name",
 				Description: "A friendly name for the project.",
 				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "tags",
-				Description: "A list of tags for the project.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "environments",
-				Description: "Details of the environment associated to the project.",
-				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromJSONTag(),
 			},
 			{
 				Name:        "filter",
@@ -79,6 +58,27 @@ func tablelaunchdarklyProject(_ context.Context) *plugin.Table {
 				Description: "A comma-separated list of properties that can reveal additional information in the response.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromQual("expand"),
+			},
+			{
+				Name:        "links",
+				Description: "The location and content type of related resources.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "default_client_side_availability",
+				Description: "A set of boolean values which represent the client side availability.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "tags",
+				Description: "A list of tags for the project.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "environments",
+				Description: "Details of the environment associated to the project.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
 			},
 			{
 				Name:        "flag_defaults",

@@ -1,6 +1,6 @@
 # Table: launchdarkly_feature_flag
 
-Thisg table provides information about feature flags used by your application. Feature flags are used to control percentage rollouts, target specific contexts, or toggle off a feature programmatically. By querying this table, you can view the representation of a feature flag and perform various tasks related to feature management.
+This table provides information about feature flags used by your application. Feature flags are used to control percentage rollouts, target specific contexts, or toggle off a feature programmatically. By querying this table, you can view the representation of a feature flag and perform various tasks related to feature management.
 
 ## Examples
 
@@ -68,7 +68,7 @@ where
 select
   name,
   key,
-  version,  
+  version,
   maintainer ->> '_id' as maintainer_id,
   maintainer ->> 'email' as maintainer_email_id,
   (maintainer ->> 'firstName') || ' ' || (maintainer ->> 'lastName')as maintainer_name,

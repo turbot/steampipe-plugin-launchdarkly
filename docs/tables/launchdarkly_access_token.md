@@ -26,7 +26,7 @@ select
   id,
   member ->> '_id' as member_id,
   member ->> 'email' as member_email_id,
- (member ->> 'firstName') || ' ' || (member ->> 'lastName')as member_name,
+  (member ->> 'firstName') || ' ' || (member ->> 'lastName')as member_name,
   member ->> 'role' as member_role,
   creation_date
 from
@@ -48,7 +48,7 @@ where
   creation_date >= now() - interval '30' day;
 ```
 
-### List of access tokens which haven't been used in the last 30 days
+### List the access tokens which haven't been used in the last 30 days
 
 ```sql
 select
@@ -75,7 +75,7 @@ group by
   (member ->> '_id');
 ```
 
-### Get the details of an access token with read-only permission
+### Get the details of access tokens with read-only permission
 
 ```sql
 select

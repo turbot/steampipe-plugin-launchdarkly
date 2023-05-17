@@ -63,19 +63,9 @@ func tablelaunchdarklyAccountMember(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "custom_roles",
-				Description: "The set of custom roles (as keys) assigned to the member.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "mfa",
 				Description: "Whether multi-factor authentication is enabled for this member.",
 				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "exclude_dashboards",
-				Description: "Default dashboards that the member has chosen to ignore.",
-				Type:        proto.ColumnType_JSON,
 			},
 			{
 				Name:        "last_seen",
@@ -84,21 +74,30 @@ func tablelaunchdarklyAccountMember(_ context.Context) *plugin.Table {
 				Transform:   transform.FromField("LastSeen").Transform(transform.UnixMsToTimestamp),
 			},
 			{
+				Name:        "creation_date",
+				Description: "Time when the member was created.",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Transform:   transform.FromField("CreationDate").Transform(transform.UnixMsToTimestamp),
+			},
+			{
+				Name:        "custom_roles",
+				Description: "The set of custom roles (as keys) assigned to the member.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "exclude_dashboards",
+				Description: "Default dashboards that the member has chosen to ignore.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
 				Name:        "teams",
 				Description: "Details on the teams this member is assigned to.",
 				Type:        proto.ColumnType_JSON,
-
 			},
 			{
 				Name:        "permission_grants",
 				Description: "A list of permission grants. Permission grants allow a member to have access to a specific action, without having to create or update a custom role.",
 				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "creation_date",
-				Description: "Time when the member was created.",
-				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("CreationDate").Transform(transform.UnixMsToTimestamp),
 			},
 			// Steampipe standard columns
 			{

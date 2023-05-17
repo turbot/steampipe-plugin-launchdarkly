@@ -18,7 +18,7 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 		List: &plugin.ListConfig{
 			ParentHydrate: listProjects,
 			Hydrate: listFeatureFlags,
-			
+
 			RetryConfig: &plugin.RetryConfig{
 				ShouldRetryErrorFunc: shouldRetryError([]string{"429"}),
 			},
@@ -34,6 +34,11 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
+				Name:        "key",
+				Description: "A unique key used to reference the flag in your code.",
+				Type:        proto.ColumnType_STRING,
+			},
+			{
 				Name:        "kind",
 				Description: "Kind of feature flag.",
 				Type:        proto.ColumnType_STRING,
@@ -41,11 +46,6 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 			{
 				Name:        "description",
 				Description: "Description of the feature flag.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "key",
-				Description: "A unique key used to reference the flag in your code.",
 				Type:        proto.ColumnType_STRING,
 			},
 			{
@@ -65,19 +65,40 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
-				Name:        "client_side_availability",
-				Description: "An array of possible variations for the flag.",
-				Type:        proto.ColumnType_JSON,
+				Name:        "temporary",
+				Description: "Whether the flag is a temporary flag.",
+				Type:        proto.ColumnType_BOOL,
+			},
+			{
+				Name:        "maintainer_id",
+				Description: "Associated maintainerId for the feature flag.",
+				Type:        proto.ColumnType_STRING,
+			},
+			{
+				Name:        "maintainer_team_key",
+				Description: "The key of the associated team that maintains this feature flag.",
+				Type:        proto.ColumnType_STRING,
+			},
+			{
+				Name:        "archived",
+				Description: "Boolean indicating if the feature flag is archived.",
+				Type:        proto.ColumnType_BOOL,
+			},
+			{
+				Name:        "archived_date",
+				Description: "Time when the feature flag has been archived.",
+				Type:        proto.ColumnType_TIMESTAMP,
+				Transform:   transform.FromField("ArchivedDate").Transform(transform.UnixMsToTimestamp),
+			},
+			{
+				Name:        "project_key",
+				Description: "The key of this project.",
+				Type:        proto.ColumnType_STRING,
 			},
 			{
 				Name:        "variation",
 				Description: "An array of possible variations for the flag.",
 				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "temporary",
-				Description: "Whether the flag is a temporary flag.",
-				Type:        proto.ColumnType_BOOL,
 			},
 			{
 				Name:        "tags",
@@ -90,19 +111,9 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_JSON,
 			},
 			{
-				Name:        "maintainer_id",
-				Description: "Associated maintainerId for the feature flag.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
 				Name:        "maintainer",
 				Description: "Details of the maintainer for the feature flags.",
 				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "maintainer_team_key",
-				Description: "The key of the associated team that maintains this feature flag.",
-				Type:        proto.ColumnType_STRING,
 			},
 			{
 				Name:        "goal_ids",
@@ -120,17 +131,6 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_JSON,
 			},
 			{
-				Name:        "archived",
-				Description: "Boolean indicating if the feature flag is archived.",
-				Type:        proto.ColumnType_BOOL,
-			},
-			{
-				Name:        "archived_date",
-				Description: "Time when the feature flag has been archived.",
-				Type:        proto.ColumnType_TIMESTAMP,
-				Transform:   transform.FromField("ArchivedDate").Transform(transform.UnixMsToTimestamp),
-			},
-			{
 				Name:        "defaults",
 				Description: "The index, from the array of variations for this flag, of the variation to serve by default when targeting is on or off.",
 				Type:        proto.ColumnType_JSON,
@@ -141,9 +141,9 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_JSON,
 			},
 			{
-				Name:        "project_key",
-				Description: "The key of this project.",
-				Type:        proto.ColumnType_STRING,
+				Name:        "client_side_availability",
+				Description: "An array of possible variations for the flag.",
+				Type:        proto.ColumnType_JSON,
 			},
 			// Steampipe standard columns
 			{

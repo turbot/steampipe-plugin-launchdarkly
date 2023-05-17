@@ -38,13 +38,8 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 			},
 			{
 				Name:        "description",
-				Description: "A description for the access token.",
+				Description: "A description for the team.",
 				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "access",
-				Description: "Defines the access levels designated to the team members.",
-				Type:        proto.ColumnType_JSON,
 			},
 			{
 				Name:        "creation_date",
@@ -59,17 +54,6 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 				Transform:   transform.FromField("LastModified").Transform(transform.UnixMsToTimestamp),
 			},
 			{
-				Name:        "links",
-				Description: "The location and content type of related resources.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "roles",
-				Description: "Custom roles assigned to the team.",
-				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromJSONTag(),
-			},
-			{
 				Name:        "idp_synced",
 				Description: "Whether the team has been synced with an external identity provider (IdP). Team sync is available to customers on an Enterprise plan.",
 				Type:        proto.ColumnType_BOOL,
@@ -78,18 +62,6 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 				Name:        "members",
 				Description: "Team member details.",
 				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromJSONTag(),
-			},
-			{
-				Name:        "projects",
-				Description: "Project details associated with the team.",
-				Type:        proto.ColumnType_JSON,
-				Transform:   transform.FromJSONTag(),
-			},
-			{
-				Name:        "maintainers",
-				Description: "Team maintainer details.",
-				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromJSONTag(),
 			},
 			{
@@ -108,6 +80,34 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 				Description: "A comma-separated list of properties that can reveal additional information in the response.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromQual("expand"),
+			},
+			{
+				Name:        "access",
+				Description: "Defines the access levels designated to the team members.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "links",
+				Description: "The location and content type of related resources.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "roles",
+				Description: "Custom roles assigned to the team.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "projects",
+				Description: "Project details associated with the team.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
+			},
+			{
+				Name:        "maintainers",
+				Description: "Team maintainer details.",
+				Type:        proto.ColumnType_JSON,
+				Transform:   transform.FromJSONTag(),
 			},
 			// Steampipe standard columns
 			{

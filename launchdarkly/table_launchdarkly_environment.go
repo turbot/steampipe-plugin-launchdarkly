@@ -28,11 +28,6 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{
-				Name:        "links",
-				Description: "Links to other resources within the API. Includes the URL and content type of those resources.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "id",
 				Description: "ID of the environment.",
 				Type:        proto.ColumnType_STRING,
@@ -89,14 +84,19 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
-				Name:        "tags",
-				Description: "A list of tags for this environment.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "project_key",
 				Description: "The key of this project.",
 				Type:        proto.ColumnType_STRING,
+			},
+			{
+				Name:        "links",
+				Description: "Links to other resources within the API. Includes the URL and content type of those resources.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "tags",
+				Description: "A list of tags for this environment.",
+				Type:        proto.ColumnType_JSON,
 			},
 			{
 				Name:        "approval_settings",

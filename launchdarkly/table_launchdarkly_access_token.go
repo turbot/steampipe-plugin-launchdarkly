@@ -48,11 +48,6 @@ func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
-				Name:        "member",
-				Description: "Summary of the member like email, first name, last name etc.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "creation_date",
 				Description: "Creation date of the access token.",
 				Type:        proto.ColumnType_TIMESTAMP,
@@ -63,16 +58,6 @@ func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 				Description: "Last modified date of the access token.",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("LastModified").Transform(transform.UnixMsToTimestamp),
-			},
-			{
-				Name:        "custom_role_ids",
-				Description: "A list of custom role IDs to use as access limits for the access token.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
-				Name:        "inline_role",
-				Description: "An array of policy statements, with three attributes: effect, resources, actions. May be used in place of a built-in or custom role.",
-				Type:        proto.ColumnType_JSON,
 			},
 			{
 				Name:        "role",
@@ -90,11 +75,6 @@ func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_BOOL,
 			},
 			{
-				Name:        "links",
-				Description: "The location and content type of related resources.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "default_api_version",
 				Description: "The default API version for this token.",
 				Type:        proto.ColumnType_INT,
@@ -104,6 +84,26 @@ func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 				Description: "Date and time when the access token was last used.",
 				Type:        proto.ColumnType_TIMESTAMP,
 				Transform:   transform.FromField("LastUsed").Transform(transform.UnixMsToTimestamp),
+			},
+			{
+				Name:        "member",
+				Description: "Summary of the member like email, first name, last name etc.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "custom_role_ids",
+				Description: "A list of custom role IDs to use as access limits for the access token.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "inline_role",
+				Description: "An array of policy statements, with three attributes: effect, resources, actions. May be used in place of a built-in or custom role.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
+				Name:        "links",
+				Description: "The location and content type of related resources.",
+				Type:        proto.ColumnType_JSON,
 			},
 			// Steampipe standard columns
 			{

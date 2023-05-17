@@ -8,7 +8,7 @@ The account members API allows you to invite new members to an account by making
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   role,
   email,
@@ -21,7 +21,7 @@ from
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   role,
   email,
@@ -32,11 +32,11 @@ where
   creation_date >= now() - interval '30' day;
 ```
 
-### List the members with MFA enabled
+### List the acount members with MFA enabled
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   role,
   email,
@@ -51,7 +51,7 @@ where
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   role,
   email,
@@ -59,17 +59,17 @@ select
 from
   launchdarkly_account_member
 where
-  _verified;
+  verified;
 ```
 
 ### List the custom roles assigned to an account member
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   email,
-  customRoles
+  custom_roles
 from
   launchdarkly_account_member;
 ```
@@ -78,10 +78,10 @@ from
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   email,
-  excludedDashboards
+  exclude_dashboards
 from
   launchdarkly_account_member;
 ```
@@ -90,7 +90,7 @@ from
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   t ->> 'key' as team_key,
   t ->> 'name' as team_name
@@ -103,7 +103,7 @@ from
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   role,
   email,
@@ -118,7 +118,7 @@ where
 
 ```sql
 select
-  _id,
+  id,
   first_name || last_name as name,
   p ->> 'actionSet' as action_set,
   p ->> 'actions' as actions,

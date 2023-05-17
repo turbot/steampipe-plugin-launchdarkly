@@ -69,11 +69,6 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 				Transform:   transform.FromField("Date").Transform(transform.UnixMsToTimestamp),
 			},
 			{
-				Name:        "accesses",
-				Description: "Details on the actions performed and resources acted on in this audit log entry.",
-				Type:        proto.ColumnType_JSON,
-			},
-			{
 				Name:        "kind",
 				Description: "Type of resource.",
 				Type:        proto.ColumnType_STRING,
@@ -84,8 +79,36 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
+				Name:        "title_verb",
+				Description: "The action and resource recorded in this audit log entry.",
+				Type:        proto.ColumnType_STRING,
+			},
+			{
+				Name:        "audit_log_title",
+				Description: "A description of what occurred, in the 'format member' 'titleVerb' 'target'.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Title"),
+			},
+			{
+				Name:        "spec",
+				Description: "A resource specifier that lets you filter audit log listings by resource.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("spec"),
+			},
+			{
+				Name:        "query",
+				Description: "Text to search for. You can search for the full or partial name of the resource, or full or partial email address of the member who made a change.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromQual("query"),
+			},
+			{
+				Name:        "accesses",
+				Description: "Details on the actions performed and resources acted on in this audit log entry.",
+				Type:        proto.ColumnType_JSON,
+			},
+			{
 				Name:        "subject",
-				Description: "Optional comment for the audit log entry.",
+				Description: "A pointer to a SubjectDataRep object containing additional data about the subject related to this audit log entry. It is optional and may be omitted.",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromJSONTag(),
 			},
@@ -108,17 +131,6 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 				Transform:   transform.FromJSONTag(),
 			},
 			{
-				Name:        "title_verb",
-				Description: "The action and resource recorded in this audit log entry.",
-				Type:        proto.ColumnType_STRING,
-			},
-			{
-				Name:        "audit_log_title",
-				Description: "A description of what occurred, in the 'format member' 'titleVerb' 'target'.",
-				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromField("Title"),
-			},
-			{
 				Name:        "target",
 				Description: "Target resource representation.",
 				Type:        proto.ColumnType_JSON,
@@ -129,18 +141,6 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 				Description: "Parent resource representation.",
 				Type:        proto.ColumnType_JSON,
 				Transform:   transform.FromJSONTag(),
-			},
-			{
-				Name:        "spec",
-				Description: "A resource specifier that lets you filter audit log listings by resource.",
-				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromQual("spec"),
-			},
-			{
-				Name:        "query",
-				Description: "Text to search for. You can search for the full or partial name of the resource, or full or partial email address of the member who made a change.",
-				Type:        proto.ColumnType_STRING,
-				Transform:   transform.FromQual("query"),
 			},
 			// Steampipe standard columns
 			{
