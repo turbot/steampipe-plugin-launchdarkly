@@ -17,15 +17,14 @@ func tablelaunchdarklyFeatureFlag(_ context.Context) *plugin.Table {
 		Description: "Fetch a list of all feature flags.",
 		List: &plugin.ListConfig{
 			ParentHydrate: listProjects,
-			Hydrate: listFeatureFlags,
-
+			Hydrate:       listFeatureFlags,
 			RetryConfig: &plugin.RetryConfig{
 				ShouldRetryErrorFunc: shouldRetryError([]string{"429"}),
 			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.AllColumns([]string{"project_key", "key"}),
-			Hydrate: getFeatureFlag,
+			Hydrate:    getFeatureFlag,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -187,17 +186,17 @@ func listFeatureFlags(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 			return nil, err
 		}
 
-	for _, flag := range flags.Items {
-		d.StreamListItem(ctx, launchdarklyFeatureFlag{flag, projectKey})
-		if d.RowsRemaining(ctx) == 0 {
+		for _, flag := range flags.Items {
+			d.StreamListItem(ctx, launchdarklyFeatureFlag{flag, projectKey})
+			if d.RowsRemaining(ctx) == 0 {
 				return nil, nil
 			}
-	}
-	count += len(flags.Items)
+		}
+		count += len(flags.Items)
 		if count >= int(flags.GetTotalCount()) {
 			break
 		}
-	params.Offset(int64(count))
+		params.Offset(int64(count))
 	}
 	return nil, nil
 }

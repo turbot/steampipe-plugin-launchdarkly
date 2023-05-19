@@ -27,8 +27,8 @@ func tablelaunchdarklyAuditLog(_ context.Context) *plugin.Table {
 					Operators: []string{">", ">=", "=", "<", "<="},
 				},
 				{
-					Name:      "query",
-					Require:   plugin.Optional,
+					Name:    "query",
+					Require: plugin.Optional,
 				},
 			},
 		},

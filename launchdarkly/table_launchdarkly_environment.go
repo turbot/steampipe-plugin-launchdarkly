@@ -17,14 +17,14 @@ func tablelaunchdarklyEnvironment(_ context.Context) *plugin.Table {
 		Description: "Fetch a list of all environments.",
 		List: &plugin.ListConfig{
 			ParentHydrate: listProjects,
-			Hydrate: listEnvironments,
+			Hydrate:       listEnvironments,
 			RetryConfig: &plugin.RetryConfig{
 				ShouldRetryErrorFunc: shouldRetryError([]string{"429"}),
 			},
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.AllColumns([]string{"project_key", "key"}),
-			Hydrate: getEnvironment,
+			Hydrate:    getEnvironment,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -145,17 +145,17 @@ func listEnvironments(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrat
 			return nil, err
 		}
 
-	for _, environment := range environments.Items {
-		d.StreamListItem(ctx, launchdarklyProjectEnvironment{environment, projectKey})
-		if d.RowsRemaining(ctx) == 0 {
+		for _, environment := range environments.Items {
+			d.StreamListItem(ctx, launchdarklyProjectEnvironment{environment, projectKey})
+			if d.RowsRemaining(ctx) == 0 {
 				return nil, nil
 			}
-	}
-	count += len(environments.Items)
+		}
+		count += len(environments.Items)
 		if count >= int(environments.GetTotalCount()) {
 			break
 		}
-	params.Offset(int64(count))
+		params.Offset(int64(count))
 	}
 	return nil, nil
 }

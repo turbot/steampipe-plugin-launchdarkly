@@ -180,7 +180,6 @@ func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData)
 func getFlagDefaultsForProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	logger := plugin.Logger(ctx)
 	key := h.Item.(ldapi.Project).Key
-	logger.Trace("Key info", key)
 
 	// Create client
 	client, err := connect(ctx, d)

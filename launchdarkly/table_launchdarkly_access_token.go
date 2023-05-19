@@ -19,7 +19,7 @@ func tablelaunchdarklyAccessToken(_ context.Context) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate: getAccessToken,
+			Hydrate:    getAccessToken,
 		},
 		Columns: []*plugin.Column{
 			{
@@ -158,4 +158,3 @@ func getAccessToken(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateD
 
 	return token, nil
 }
-

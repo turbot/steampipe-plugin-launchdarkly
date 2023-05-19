@@ -23,7 +23,7 @@ func tablelaunchdarklyTeam(_ context.Context) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("key"),
-			Hydrate: getTeam,
+			Hydrate:    getTeam,
 		},
 		Columns: []*plugin.Column{
 			{
