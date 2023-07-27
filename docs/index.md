@@ -89,4 +89,4 @@ export LAUNCHDARKLY_ACCESS_TOKEN=api-dd8ce121-cd11-401c-be02-322b7362111d
 ## Get involved
 
 - Open source: https://github.com/turbot/steampipe-plugin-launchdarkly
-- Community: [Slack Channel](https://steampipe.io/community/join)
+- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
