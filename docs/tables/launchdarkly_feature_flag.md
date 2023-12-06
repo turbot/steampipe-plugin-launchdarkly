@@ -16,8 +16,18 @@ The `launchdarkly_feature_flag` table provides insights into feature flags withi
 ### Basic info
 Explore the characteristics of different feature flags, including their names, keys, versions, creation dates, and types. This information can be useful to understand the various aspects of your feature flags and to track their history over time.Explore the fundamental details of your feature flags, such as their names, versions, and creation dates, to gain a comprehensive overview and better manage your feature releases. This can be particularly useful in scenarios where you need to assess the overall status of your feature flags or identify any issues.
 
+```sql+postgres
+select
+  name,
+  key,
+  version,
+  creation_date,
+  kind
+from
+  launchdarkly_feature_flag;
+```
 
-```sql
+```sql+sqlite
 select
   name,
   key,
@@ -32,7 +42,7 @@ from
 Discover the recently created feature flags within the past month. This is useful for keeping track of new features or changes that have been introduced to your application or service.Discover the segments that have been introduced in the past month. This can be useful for understanding recent changes or additions to your product's functionality.
 
 
-```sql
+```sql+postgres
 select
   name,
   key,
@@ -45,11 +55,23 @@ where
   creation_date >= now() - interval '30' day;
 ```
 
+```sql+sqlite
+select
+  name,
+  key,
+  version,
+  creation_date,
+  kind
+from
+  launchdarkly_feature_flag
+where
+  creation_date >= datetime('now', '-30 day');
+```
+
 ### List out the archived feature flags
 Explore which feature flags have been archived to manage your application's features more effectively. This could be useful in understanding the evolution of your application's features and make informed decisions about future development.Explore which feature flags have been archived in LaunchDarkly to better manage your flag inventory and understand the evolution of your feature rollout strategies.
 
-
-```sql
+```sql+postgres
 select
   name,
   key,
@@ -62,11 +84,23 @@ where
   archived;
 ```
 
+```sql+sqlite
+select
+  name,
+  key,
+  version,
+  creation_date,
+  kind
+from
+  launchdarkly_feature_flag
+where
+  archived = 1;
+```
+
 ### List out all the temporary feature flags
 Discover the segments that utilize temporary feature flags, allowing for a better understanding of how these are used in your application and potentially highlighting areas for optimization or risk. This can be especially useful in managing and tracking the use of feature flags for testing or temporary features.Explore which feature flags are temporary in your LaunchDarkly setup. This can help manage and clean up temporary flags that are no longer needed, improving system efficiency.
 
-
-```sql
+```sql+postgres
 select
   name,
   key,
@@ -79,11 +113,23 @@ where
   temporary;
 ```
 
+```sql+sqlite
+select
+  name,
+  key,
+  version,
+  creation_date,
+  kind
+from
+  launchdarkly_feature_flag
+where
+  temporary = 1;
+```
+
 ### List out the maintainer details of a feature flag
 Discover the individuals responsible for maintaining specific feature flags. This is beneficial for understanding who to contact regarding changes or issues with a particular feature flag.Explore which feature flags are being managed by whom, to identify the individuals responsible for specific functions and their roles. This is useful for understanding accountability and communication paths within a team managing feature flags.
 
-
-```sql
+```sql+postgres
 select
   name,
   key,
@@ -92,6 +138,19 @@ select
   maintainer ->> 'email' as maintainer_email_id,
   (maintainer ->> 'firstName') || ' ' || (maintainer ->> 'lastName')as maintainer_name,
   maintainer ->> 'role' as maintainer_role
+from
+  launchdarkly_feature_flag;
+```
+
+```sql+sqlite
+select
+  name,
+  key,
+  version,
+  json_extract(maintainer, '$._id') as maintainer_id,
+  json_extract(maintainer, '$.email') as maintainer_email_id,
+  (json_extract(maintainer, '$.firstName') || ' ' || json_extract(maintainer, '$.lastName')) as maintainer_name,
+  json_extract(maintainer, '$.role') as maintainer_role
 from
   launchdarkly_feature_flag;
 ```
