@@ -17,7 +17,16 @@ The `launchdarkly_project` table provides insights into projects within LaunchDa
 Explore the basic information of your projects in LaunchDarkly to understand their unique identifiers and keys. This can aid in project management and tracking.Explore the basic information of projects in LaunchDarkly to understand their unique identifiers and associated keys. This can help in managing and organizing projects effectively.
 
 
-```sql
+```sql+postgres
+select
+  name,
+  id,
+  key
+from
+  launchdarkly_project;
+```
+
+```sql+sqlite
 select
   name,
   id,
@@ -30,7 +39,19 @@ from
 Explore the environmental aspects of a specific project to gain insights into its unique identifiers and associated details. This can be particularly useful for project management, to ensure the correct environment is being used for each project.Explore the environment details associated with a particular project. This is useful in understanding the project's settings and configurations, especially when managing multiple projects or environments.
 
 
-```sql
+```sql+postgres
+select
+  p.name as project_name,
+  p.id as project_id,
+  p.key as project_key,
+  e.name as environment_name,
+  e.id as environment_id
+from
+  launchdarkly_project as p
+  left join launchdarkly_environment as e on p.key = e.project_key;
+```
+
+```sql+sqlite
 select
   p.name as project_name,
   p.id as project_id,
@@ -46,7 +67,7 @@ from
 Explore projects that have been configured for default availability on the client-side via a mobile key. This allows for the identification of projects that are accessible on mobile devices, facilitating mobile-based operations and activities.Explore which projects are configured for default client-side availability via a mobile key. This can be useful to identify projects that are optimized for mobile access, enhancing user experience and engagement.
 
 
-```sql
+```sql+postgres
 select
   name as project_name,
   id as project_id,
@@ -57,11 +78,22 @@ where
   default_client_side_availability ->> 'usingMobileKey' = 'true';
 ```
 
+```sql+sqlite
+select
+  name as project_name,
+  id as project_id,
+  key as project_key
+from
+  launchdarkly_project
+where
+  json_extract(default_client_side_availability, '$.usingMobileKey') = 'true';
+```
+
 ### List the flag defaults of a project
 This query can be used to gain insights into the default settings of a project in LaunchDarkly, such as the temporary flag, the true and false display names, and the client-side availability. This can be particularly useful for project managers or developers who want to understand the project's default configurations and make informed decisions about potential changes.Explore the default settings of a project's flags to understand their configuration and usage. This can help in managing and optimizing the project's feature flags.
 
 
-```sql
+```sql+postgres
 select
   id as project_id,
   key as project_key,
@@ -73,6 +105,22 @@ select
   flag_defaults -> 'booleanDefaults' ->> 'offVariation' as off_variation,
   flag_defaults -> 'defaultClientSideAvailability' ->> 'usingEnvironmentId' as client_side_availability_using_environment_id,
   flag_defaults -> 'defaultClientSideAvailability' ->> 'usingMobileKey' as client_side_availability_using_mobile_key
+from
+  launchdarkly_project;
+```
+
+```sql+sqlite
+select
+  id as project_id,
+  key as project_key,
+  name as project_name,
+  json_extract(flag_defaults, '$.temporary') as temporary_flag,
+  json_extract(flag_defaults, '$.booleanDefaults.trueDisplayName') as true_display_name,
+  json_extract(flag_defaults, '$.booleanDefaults.falseDisplayName') as false_display_name,
+  json_extract(flag_defaults, '$.booleanDefaults.onVariation') as on_variation,
+  json_extract(flag_defaults, '$.booleanDefaults.offVariation') as off_variation,
+  json_extract(flag_defaults, '$.defaultClientSideAvailability.usingEnvironmentId') as client_side_availability_using_environment_id,
+  json_extract(flag_defaults, '$.defaultClientSideAvailability.usingMobileKey') as client_side_availability_using_mobile_key
 from
   launchdarkly_project;
 ```
