@@ -8,6 +8,7 @@ short_name: "launchdarkly"
 description: "Steampipe plugin to query projects, teams, metrics, flags and more from LaunchDarkly."
 og_description: "Query LaunchDarkly with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/launchdarkly-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # LaunchDarkly + Steampipe
