@@ -8,13 +8,14 @@ short_name: "launchdarkly"
 description: "Steampipe plugin to query projects, teams, metrics, flags and more from LaunchDarkly."
 og_description: "Query LaunchDarkly with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/launchdarkly-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # LaunchDarkly + Steampipe
 
 [LaunchDarkly](https://launchdarkly.com) is a feature management platform that enables software teams to build better software faster by safely serving and controlling software features in production.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 List feature flags in your LaunchDarkly account:
 
@@ -86,7 +87,4 @@ Alternatively, you can also use the standard LaunchDarkly environment variables 
 export LAUNCHDARKLY_ACCESS_TOKEN=api-dd8ce121-cd11-401c-be02-322b7362111d
 ```
 
-## Get involved
-
-- Open source: https://github.com/turbot/steampipe-plugin-launchdarkly
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
+)
