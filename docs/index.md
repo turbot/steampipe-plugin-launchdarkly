@@ -15,7 +15,7 @@ engines: ["steampipe", "sqlite", "postgres", "export"]
 
 [LaunchDarkly](https://launchdarkly.com) is a feature management platform that enables software teams to build better software faster by safely serving and controlling software features in production.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 List feature flags in your LaunchDarkly account:
 
