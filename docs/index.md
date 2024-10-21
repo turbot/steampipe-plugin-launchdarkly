@@ -86,5 +86,3 @@ Alternatively, you can also use the standard LaunchDarkly environment variables 
 ```sh
 export LAUNCHDARKLY_ACCESS_TOKEN=api-dd8ce121-cd11-401c-be02-322b7362111d
 ```
-
-)
