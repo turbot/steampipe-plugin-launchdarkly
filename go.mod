@@ -6,7 +6,7 @@ toolchain go1.23.2
 
 require (
 	github.com/launchdarkly/api-client-go/v13 v13.0.0
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.11.6
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.11.7
 )
 
 require (
