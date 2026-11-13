@@ -7,7 +7,7 @@ import (
 
 	ldapi "github.com/launchdarkly/api-client-go/v13"
 
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (*ldapi.APIClient, error) {
@@ -24,7 +24,7 @@ func connectionUncached(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "launchdarkly"
-	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+	if cachedData, ok := d.ConnectionCache.Get(ctx, cacheKey); ok {
 		return cachedData.(*ldapi.APIClient), nil
 	}
 
@@ -46,6 +46,6 @@ func connectionUncached(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 	cfg.AddDefaultHeader("Authorization", accessToken)
 	conn := ldapi.NewAPIClient(cfg)
 
-	d.ConnectionManager.Cache.Set(cacheKey, conn)
+	_ = d.ConnectionCache.Set(ctx, cacheKey, conn)
 	return conn, nil
 }

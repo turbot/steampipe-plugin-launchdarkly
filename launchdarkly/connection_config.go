@@ -1,7 +1,7 @@
 package launchdarkly
 
 import (
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 type launchdarklyConfig struct {
@@ -14,9 +14,9 @@ func ConfigInstance() interface{} {
 
 // GetConfig :: retrieve and cast connection config from query data
 func GetConfig(connection *plugin.Connection) launchdarklyConfig {
-	if connection == nil || connection.Config == nil {
+	if connection == nil || connection.GetConfig() == nil {
 		return launchdarklyConfig{}
 	}
-	config, _ := connection.Config.(launchdarklyConfig)
+	config, _ := connection.GetConfig().(launchdarklyConfig)
 	return config
 }
